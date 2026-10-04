@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5195833333333333,
-        "y": 4.015767543859649
+        "x": 3.5473894436519258,
+        "y": 2.9804992867332385
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2953681433192887,
-        "y": 3.905189297504564
+        "x": 3.2479396707566184,
+        "y": 2.9029575519349056
       },
       "isLocked": false,
-      "linkedName": "Hub Start"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.66756062767475,
-        "y": 3.6144935805991443
+        "x": 3.2756776034236803,
+        "y": 2.721726105563481
       },
       "prevControl": {
-        "x": 3.2875328885052704,
-        "y": 3.8957979373446756
+        "x": 3.51913886907112,
+        "y": 2.5687806316186665
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Backup Centre"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -47,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 12.042575142884983
+    "rotation": 45.000000000000014
   },
   "reversed": false,
   "folder": null,
