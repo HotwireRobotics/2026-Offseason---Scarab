@@ -94,7 +94,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     // Track time.
-    Time time = Seconds.of(Timer.getTimestamp());
+    Time time = Seconds.of(Timer.getTimestamp()); 
 
     // Control command scheduler and log data.
     CommandScheduler.getInstance().run();
