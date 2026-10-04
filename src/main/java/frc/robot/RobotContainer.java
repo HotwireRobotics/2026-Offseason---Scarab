@@ -93,22 +93,6 @@ public class RobotContainer {
         PDP = new PowerDistribution();
         PDP.setSwitchableChannel(true);
 
-        // Initialize simulation.
-        // if (Constants.mode.equals(Mode.SIM)) {
-        //     simulation = new Handler(
-        //             () -> {
-        //                 return Constants.regress(Meters
-        //                         .of(drive.getPose().getTranslation().getDistance(Constants.Poses.hub.getPose().getTranslation())));
-        //             },
-        //             () -> shooter.manager.is(Shooter.State.SHOOTING),
-        //             () -> intake.manager.is(Intake.State.FORWARD),
-        //             () -> Degrees.of(0),
-        //             actuator::getDisplacement,
-        //             drive::getPose, drive::getChassisSpeeds, drive::setPose); 
-        // }else {
-        //     simulation = new Handler(null, null, null, null, null, null, null, null);
-        // }
-
         // Configure button bindings.
         configureButtonBindings();
         configureVoiceBindings();
@@ -127,9 +111,6 @@ public class RobotContainer {
         final Command stopDrive = Commands.runOnce(() -> drive.stop());
         final Command lockDrive = Commands.runOnce(() -> drive.stopWithX());
 
-        // Start markers launch a detached run so the auto moves on while the
-        // rollers keep spinning (a timed run would release the motor when it
-        // ends). Stop markers cancel it; it also ends on its own with auto.
         final Command intaking = intake.run().onlyWhile(DriverStation::isAutonomousEnabled);
         NamedCommands.registerCommand("Start Intaking",
                 Commands.runOnce(() -> CommandScheduler.getInstance().schedule(intaking)));
@@ -247,9 +228,6 @@ public class RobotContainer {
         Pose2d pointer = new Pose2d(robotPose.getX(), robotPose.getY(), rotation);
         Logger.recordOutput("Hub Pointer", pointer);
 
-        // Every input the target is built from, so a heading that comes out
-        // backwards can be traced to the bearing, the hub pose, or the alliance
-        // that mirrored it, rather than to the controller chasing it.
         Logger.recordOutput("Align/Alliance", Constants.getAlliance());
         Logger.recordOutput("Align/Hub Pose", hubPose);
         Logger.recordOutput("Align/Bearing", bearing.getDegrees());
@@ -274,12 +252,6 @@ public class RobotContainer {
                 () -> -Constants.Joysticks.driver.getLeftY(),
                 () -> -Constants.Joysticks.driver.getLeftX(),
                 rotation)
-                // Close the heading loop on the module-derived yaw for the
-                // duration of the alignment. That is what the drivetrain runs on
-                // with no gyro connected, and it is the configuration alignment
-                // was tuned against. It starts from the gyro's heading and
-                // extrapolates from there; the Pigeon takes the estimate back on
-                // release, stepping it by whatever the modules drifted.
                 .beforeStarting(() -> drive.setHeadingSource(Drive.HeadingSource.KINEMATIC))
                 .finallyDo(() -> drive.setHeadingSource(Drive.HeadingSource.GYRO));
     }
@@ -304,14 +276,11 @@ public class RobotContainer {
                 .or(shooting)
                 .whileTrue(drive.stopX());
 
-        // Aim at the hub while held.
+        // Aim at the hub while held. //! Disabled.
         // Constants.Joysticks.operator
         //         .x()
         //         .whileTrue(firingOrientation());
 
-        // Zero the heading, the gyro's and the pose estimate's together. This
-        // is the only thing that moves the gyro's offset; everything else that
-        // resets a pose leaves the gyro where it is.
         Constants.Joysticks.driver
                 .a()
                 .onTrue(Commands.runOnce(drive::rezero, drive)
@@ -334,15 +303,13 @@ public class RobotContainer {
         voice.bind("extend",  time -> Commands.runOnce(actuator::extend));
         voice.bind("retract", time -> Commands.runOnce(actuator::retract));
 
-        // Flips a flag on NetworkTables and moves nothing, so the path from
-        // microphone to scheduler can be checked on a disabled robot.
+        // Flips a flag on NetworkTables and moves nothing.
         voice.bind("test", time -> Commands.runOnce(() -> {
                 test = !test;
                 Logger.recordOutput("Voice/Test", test);
             }).ignoringDisable(true));
 
-        // Halt every mechanism and the drivetrain. Voice cancels everything
-        // already running before this is scheduled.
+        // Halt every mechanism and the drivetrain.
         voice.bind("stop", time -> Commands.parallel(
                 intake .stop(),
                 hopper .stop(),

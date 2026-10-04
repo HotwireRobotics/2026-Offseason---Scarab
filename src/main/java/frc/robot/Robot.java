@@ -121,7 +121,6 @@ public class Robot extends LoggedRobot {
 
     // Update field visualization.
     field.setRobotPose(container.drive.getPose());
-    // container.simulation.tick();
   }
 
   @Override
@@ -153,8 +152,6 @@ public class Robot extends LoggedRobot {
     } else {
       Logger.recordOutput("Robot/AutonomousCommand", "None");
     }
-
-    // container.simulation.autonomous();
   }
 
   @Override
@@ -194,13 +191,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void simulationInit() {
-    // Enable the simulated robot so mechanisms and voice commands can be
-    // exercised without a Driver Station attached. WPILib only calls this
-    // method under simulation, so the real robot never reaches it.
-    //
-    // Skipped when a Driver Station is already attached, and overwritten by the
-    // next packet from one that attaches later, so the Driver Station keeps
-    // authority over enable and disable.
     if (!DriverStation.isDSAttached()) {
       DriverStationSim.setDsAttached(true);
       DriverStationSim.setEnabled(true);

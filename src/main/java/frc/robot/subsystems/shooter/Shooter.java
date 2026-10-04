@@ -143,9 +143,7 @@ public class Shooter extends SubsystemBase {
     quaternary.follow(primary, FollowerMode.ALIGNED);
 
 
-    // Triggers. One command either way: the regression modifier moves the
-    // velocity the command reads, so it can be taken and released mid-shot
-    // without the shooter stopping.
+    // Triggers.
     trigger
       .whileTrue(runVelocity(this::getShootingSpeed))
       .onFalse(runHalt());
@@ -170,8 +168,7 @@ public class Shooter extends SubsystemBase {
         .alongWith(shooter.runVelocity(
           () -> velocity.get().div(Constants.Shooter.kDivisor.get())))
         .alongWith(manager.tag(State.SHOOTING))
-        // Report the halt however the command ends, including a timeout or a
-        // cancellation, so the state tracks the motors rather than the intent.
+        // Report the halt however the command ends.
         .finallyDo(() -> manager.set(State.STOPPED));
   }
 
@@ -212,12 +209,6 @@ public class Shooter extends SubsystemBase {
 
   /**
    * Run the shooter on the regression, whatever the modifier is doing.
-   *
-   * <p>Autonomous shoots with this: no one is holding the modifier, and the
-   * shot is taken from wherever the path left the robot, so the velocity has
-   * to come from the distance rather than from the one fixed speed. The
-   * distance is read every cycle the command runs, so a shot taken while the
-   * robot is still settling is still aimed at where it ends up.
    */
   public Command runRegressed() {
     return runVelocity(this::getRegressedSpeed);

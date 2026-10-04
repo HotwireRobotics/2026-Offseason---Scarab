@@ -98,8 +98,7 @@ public class Hopper extends SubsystemBase {
         ? State.FORWARD 
         : State.REVERSE)
       )).alongWith(feeder.runVelocity(velocity))
-      // Report the halt however the command ends, including a timeout or a
-      // cancellation, so the state tracks the rollers rather than the intent.
+      // Report the halt however the command ends.
       .finallyDo(() -> manager.set(State.STOPPED));
   }
 
