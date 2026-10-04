@@ -118,9 +118,10 @@ public class RobotContainer {
                 Commands.runOnce(intaking::cancel).andThen(intake.stop()));
 
         // Actuator (intake deployment) auto markers.
-        NamedCommands.registerCommand("Lower Intake", Commands.runOnce(actuator::extend ));
-        NamedCommands.registerCommand("Raise Intake", Commands.runOnce(actuator::retract));
-        NamedCommands.registerCommand("Drop Arm",     Commands.runOnce(actuator::extend ));
+        NamedCommands.registerCommand("Lower Intake", actuator.pulse());
+        //! Disabled
+        // NamedCommands.registerCommand("Raise Intake", Commands.runOnce(actuator::retract));
+        NamedCommands.registerCommand("Drop Arm",     actuator.pulse());
 
         NamedCommands.registerCommand("Intake Period",   Commands.none());
         NamedCommands.registerCommand("Occilate Intake", Commands.none());
@@ -141,8 +142,10 @@ public class RobotContainer {
                                 Commands.parallel(
                                         hopper.run(),
                                         Commands.sequence(
-                                                waitFor(Constants.Shooter.kRetractDelay),
-                                                Commands.runOnce(actuator::retract)))))
+                                                waitFor(Constants.Shooter.kRetractDelay)
+                                                //! Disabled
+                                                // , Commands.runOnce(actuator::retract)
+                                                ))))
                         .raceWith(Commands.sequence(
                                 waitFor(Constants.Shooter.kSpinUpTime),
                                 waitFor(Constants.Shooter.kFiringTime))),
@@ -301,7 +304,8 @@ public class RobotContainer {
         // Actuator states. Both are momentary; Actuator.periodic() holds the
         // commanded position from there on.
         voice.bind("extend",  time -> Commands.runOnce(actuator::extend));
-        voice.bind("retract", time -> Commands.runOnce(actuator::retract));
+        //! Disabled
+        // voice.bind("retract", time -> Commands.runOnce(actuator::retract));
 
         // Flips a flag on NetworkTables and moves nothing.
         voice.bind("test", time -> Commands.runOnce(() -> {

@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -78,7 +79,7 @@ public class Actuator extends SubsystemBase {
 
     // Configure devices.
     Application configuration = new Application(
-      Direction.FORWARD, NeutralMode.BRAKE, Amps.of(40));
+      Direction.FORWARD, NeutralMode.COAST, Amps.of(40));
     leader = new Motor(this, Constants.MotorIDs.ACTUATOR_RIGHT);
     leader.apply(
       configuration);
@@ -94,7 +95,7 @@ public class Actuator extends SubsystemBase {
     left.follow(leader, FollowerMode.INVERSE);
 
     // Triggers.
-    trigger.onTrue(Commands.runOnce(this::toggle));
+    trigger.onTrue(pulse());
   }
 
   @Override
@@ -107,13 +108,17 @@ public class Actuator extends SubsystemBase {
       ? Constants.Actuator.kExtended.get()
       : Constants.Actuator.kRetracted.get();
     
-    leader.putPosition(target);
+    // leader.putPosition(target);
     io.setTarget(target);
 
     // Log device and derived state.
     Logs.log(leader);
     Logger.recordOutput("Actuator/Position", leader.getPosition());
     Logger.recordOutput("Actuator/Extension",      getExtension());
+  }
+
+  public Command pulse() {
+    return leader.runPercent(0.1).withTimeout(0.05);
   }
 
   /**
