@@ -1,0 +1,17 @@
+﻿﻿﻿﻿﻿﻿﻿﻿ 	Vision.periodic(): 0.076649s ﻿
+﻿﻿﻿﻿﻿﻿ 	Intake.periodic(): 0.101635s ﻿
+﻿﻿﻿﻿﻿﻿ 	Actuator.periodic(): 0.036451s ﻿
+﻿﻿﻿﻿﻿﻿  ﻿
+﻿﻿﻿﻿﻿﻿ Exception in thread "AdvantageKit_LogReceiver" java.lang.NullPointerException: Cannot invoke "edu.wpi.first.util.datalog.DataLogWriter.close()" because "this.log" is null ﻿
+﻿﻿﻿﻿﻿﻿ 	at org.littletonrobotics.junction.wpilog.WPILOGWriter.end(WPILOGWriter.java:167) ﻿
+﻿﻿﻿﻿﻿﻿ 	at org.littletonrobotics.junction.ReceiverThread.run(ReceiverThread.java:57) ﻿
+﻿﻿﻿﻿﻿﻿﻿﻿ERROR ﻿﻿ 1 ﻿﻿ Unhandled exception: java.lang.NullPointerException: Cannot invoke "java.util.function.BooleanSupplier.getAsBoolean()" because "this.doShoot" is null ﻿﻿ frc.robot.applicable.simulation.Handler.tick(Handler.java:137) ﻿﻿﻿
+﻿﻿﻿﻿﻿﻿ Error at frc.robot.applicable.simulation.Handler.tick(Handler.java:137): Unhandled exception: java.lang.NullPointerException: Cannot invoke "java.util.function.BooleanSupplier.getAsBoolean()" because "this.doShoot" is null ﻿
+﻿﻿﻿﻿﻿﻿ 	at frc.robot.applicable.simulation.Handler.tick(Handler.java:137) ﻿
+﻿﻿﻿﻿﻿﻿ 	at frc.robot.Robot.robotPeriodic(Robot.java:119) ﻿
+﻿﻿﻿﻿﻿﻿ 	at edu.wpi.first.wpilibj.IterativeRobotBase.loopFunc(IterativeRobotBase.java:400) ﻿
+﻿﻿﻿﻿﻿﻿ 	at org.littletonrobotics.junction.LoggedRobot.startCompetition(LoggedRobot.java:113) ﻿
+﻿﻿﻿﻿﻿﻿ 	at edu.wpi.first.wpilibj.RobotBase.runRobot(RobotBase.java:436) ﻿
+﻿﻿﻿﻿﻿﻿ 	at edu.wpi.first.wpilibj.RobotBase.startRobot(RobotBase.java:527) ﻿
+﻿﻿﻿﻿﻿﻿ 	at frc.robot.Main.main(Main.java:14) ﻿
+﻿﻿﻿﻿﻿﻿  ﻿

@@ -1,0 +1,59 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5195833333333333,
+        "y": 4.015767543859649
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.2953681433192887,
+        "y": 3.905189297504564
+      },
+      "isLocked": false,
+      "linkedName": "Hub Start"
+    },
+    {
+      "anchor": {
+        "x": 2.66756062767475,
+        "y": 3.6144935805991443
+      },
+      "prevControl": {
+        "x": 3.2875328885052704,
+        "y": 3.8957979373446756
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Backup Centre"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4088050314465409,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 100.0,
+    "maxAngularAcceleration": 500.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 12.042575142884983
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": false
+}

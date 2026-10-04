@@ -1,0 +1,49 @@
+{
+    "name": "Scarab",
+    "isFTC": false,
+    "disableSimplification": false,
+    "rotations": [
+        {"axis": "x", "degrees": 90}
+    ],
+    "position": [],
+    "cameras": [
+        {
+            "name": "alpha",
+            "rotations": [
+                {"axis": "y", "degrees": -25},
+                {"axis": "z", "degrees": 180}
+            ],
+            "position": [-0.327025, 0, 0.2413],
+            "resolution": [640, 480],
+            "fov": 54
+        },
+        {
+            "name": "beta",
+            "rotations": [
+                {"axis": "y", "degrees": 0},
+                {"axis": "z", "degrees": 90}
+            ],
+            "position": [-0.0254, 0.3048, 0.503656],
+            "resolution": [640, 480],
+            "fov": 54
+        },
+        {
+            "name": "gamma",
+            "rotations": [
+                {"axis": "y", "degrees": 0},
+                {"axis": "z", "degrees": -90}
+            ],
+            "position": [-0.0254, -0.3048, 0.503656],
+            "resolution": [640, 480],
+            "fov": 54
+        }
+    ],
+    "components": [
+        {
+            "zeroedRotations": [
+                {"axis": "x", "degrees": 90}
+            ],
+            "zeroedPosition": [-0.98, 0.39, -0.25]
+        }
+    ]
+  }
