@@ -1,4 +1,4 @@
-package frc.robot.subsystems.actuator;
+package frc.robot.subsystems.wrist;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
@@ -22,20 +22,13 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Mode;
 import frc.robot.hotwire.Logs;
 import frc.robot.hotwire.StateManager;
-import frc.robot.subsystems.actuator.ActuatorIO.ActuatorInputs;
 import frc.robot.subsystems.motors.Motor;
 import frc.robot.subsystems.motors.Motor.Application;
 import frc.robot.subsystems.motors.Motor.Feedforward;
 import frc.robot.subsystems.motors.MotorIO.Direction;
 import frc.robot.subsystems.motors.MotorIO.FollowerMode;
 import frc.robot.subsystems.motors.MotorIO.NeutralMode;
-import frc.robot.subsystems.actuator.Clypeus;
-
-import com.andymark.jni.AM_CAN_Mag_Switch;
-import com.andymark.jni.AM_CAN_Mag_Switch.AM_MagSwitchData;
-
-import edu.wpi.first.wpilibj.CAN;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.wrist.WristIO.ActuatorInputs;
 
 /**
  * <strong>Actuator Subsystem</strong>
@@ -43,10 +36,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * incline. Composed of two motors and a CANcoder: the right motor carries the
  * CANcoder and leads, the left motor follows it.
  */
-public class Actuator extends SubsystemBase {
+public class Wrist extends SubsystemBase {
 
   // Subsystem abstraction.
-  private final ActuatorIO io;
+  private final WristIO io;
   private final ActuatorInputs inputs;
 
   // State system.
@@ -68,7 +61,7 @@ public class Actuator extends SubsystemBase {
   // Test toggle for commanding the actuator in/out; defaults to retracted.
   private boolean toggle = false;
 
-  public Actuator(
+  public Wrist(
     Trigger trigger
   ) {
     // Initialize abstraction.

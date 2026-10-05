@@ -1,4 +1,4 @@
-package frc.robot.subsystems.actuator;
+package frc.robot.subsystems.wrist;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -10,10 +10,10 @@ import frc.robot.constants.Constants;
 
 /**
  * Real actuator IO. Reads the CANcoder carried by the right (leader) motor; the
- * motors themselves are owned by the {@link Actuator} subsystem and close their
+ * motors themselves are owned by the {@link Wrist} subsystem and close their
  * loop on this sensor.
  */
-public class Clypeus implements ActuatorIO {
+public class Clypeus implements WristIO {
 
   public Clypeus() {
 

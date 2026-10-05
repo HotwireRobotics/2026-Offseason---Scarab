@@ -28,10 +28,10 @@ import frc.robot.constants.Constants.Mode;
 import frc.robot.hotwire.Voice;
 import frc.robot.applicable.ctre.Drive;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.actuator.Actuator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.constants.Constants.Joysticks.*;
 
 import java.util.Set;
@@ -48,7 +48,7 @@ public class RobotContainer {
     public final Intake intake;
     public final Hopper hopper;
     public final Shooter shooter;
-    public final Actuator actuator;
+    public final Wrist actuator;
     public final PowerDistribution PDP;
 
     // Voice interface, and the flag its test verb toggles.
@@ -89,7 +89,7 @@ public class RobotContainer {
                 mirrored(Joysticks.operator.leftBumper(), Joysticks.driver.leftBumper())
                 //   .or(new Trigger(() -> shooter.isReady())) //! Disabled auto-start.
         );
-        actuator = new Actuator(Joysticks.operator.a());
+        actuator = new Wrist(Joysticks.operator.a());
         PDP = new PowerDistribution();
         PDP.setSwitchableChannel(true);
 

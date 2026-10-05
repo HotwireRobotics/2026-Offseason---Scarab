@@ -1,4 +1,4 @@
-package frc.robot.subsystems.actuator;
+package frc.robot.subsystems.wrist;
 
 import static edu.wpi.first.units.Units.Rotations;
 
@@ -11,7 +11,7 @@ import frc.robot.constants.Constants;
  * position toward the commanded target every loop, giving smooth, life-like
  * motion between the retracted and extended setpoints.
  */
-public class Simulation implements ActuatorIO {
+public class Simulation implements WristIO {
 
   public Simulation() {}
 

@@ -1,10 +1,10 @@
-package frc.robot.subsystems.actuator;
+package frc.robot.subsystems.wrist;
 
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.units.measure.Angle;
 
-public interface ActuatorIO {
+public interface WristIO {
 
   // Define inputs for the actuator subsystem.
   @AutoLog
