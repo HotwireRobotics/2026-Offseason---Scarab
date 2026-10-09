@@ -9,6 +9,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -105,6 +106,15 @@ public final class Constants {
   }
 
   public static class Actuator {
+    // Linear travel of the intake when the actuator fully extends.
+    public static final Tunable<Distance> kTravel =
+        new Tunable<>("Actuator/Travel", 1, Feet::of);
+    // Inclination of the linear travel relative to horizontal.
+    public static final Tunable<Angle> kAngle =
+        new Tunable<>("Actuator/Angle", 25, Degrees::of);
+    // Retracted intake model origin, in the robot frame.
+    public static final Translation3d kOrigin = new Translation3d(0.1958, 0.0, 0.21);
+
     // Leader positions for the two actuator states.
     public static final Tunable<Angle> kRetracted =
         new Tunable<>("Actuator/Retracted", 0, Rotations::of);

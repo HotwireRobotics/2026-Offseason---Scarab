@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -109,6 +110,7 @@ public class Robot extends LoggedRobot {
 
     // Log pose data.
     Logger.recordOutput("Robot Pose", container.drive.getPose());
+    Logger.recordOutput("Robot Pose 3D", new Pose3d(container.drive.getPose()));
     Logger.recordOutput("IsNeutral",  container.drive.getZone().equals(Zone.NEUTRAL));
     Logger.recordOutput("IsRightSide",container.drive.getSide()  .equals(Side.RIGHT));
 

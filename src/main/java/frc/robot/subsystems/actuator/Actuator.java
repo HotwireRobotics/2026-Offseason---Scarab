@@ -1,10 +1,16 @@
 package frc.robot.subsystems.actuator;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -95,6 +101,8 @@ public class Actuator extends SubsystemBase {
     Logger.recordOutput("Actuator/Position", getPosition());
     Logger.recordOutput("Actuator/Target",   target);
     Logger.recordOutput("Actuator/OnTarget", isTarget());
+    Logger.recordOutput("Actuator/Extension", getExtension());
+    Logger.recordOutput("Components/Intake", new Pose3d[] { getComponent() });
   }
 
   /**
@@ -168,5 +176,45 @@ public class Actuator extends SubsystemBase {
    */
   public boolean isTarget() {
     return getPosition().isNear(getTarget(), Constants.Actuator.kTolerance.get());
+  }
+
+  /**
+   * Fraction of full extension, in [0, 1], derived from the measured leader
+   * position. This is smoothly interpolated in simulation.
+   *
+   * @return extension fraction.
+   */
+  public double getExtension() {
+    double range = Constants.Actuator.kExtended.get()
+      .minus(Constants.Actuator.kRetracted.get()).in(Rotations);
+    Angle travelled = getPosition().minus(Constants.Actuator.kRetracted.get());
+    return MathUtil.clamp(travelled.in(Rotations) / range, 0, 1);
+  }
+
+  /**
+   * Linear displacement of the intake caused by the current actuator extension.
+   * The intake travels {@link Constants.Actuator#kTravel} along a
+   * {@link Constants.Actuator#kAngle} incline, moving forward and downward.
+   *
+   * @return intake displacement, in the robot frame.
+   */
+  public Translation3d getDisplacement() {
+    double distance = Constants.Actuator.kTravel.get().in(Meters) * getExtension();
+    double angle = Constants.Actuator.kAngle.get().in(Radians);
+    return new Translation3d(
+      distance * Math.cos(angle),
+      0,
+      -distance * Math.sin(angle));
+  }
+
+  /**
+   * Intake component pose, in the robot frame, for the 3D model.
+   *
+   * @return intake pose.
+   */
+  public Pose3d getComponent() {
+    return new Pose3d(
+      Constants.Actuator.kOrigin.plus(getDisplacement()),
+      Rotation3d.kZero);
   }
 }

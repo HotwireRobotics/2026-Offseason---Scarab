@@ -174,7 +174,7 @@ public class Handler {
     gamepieceSimulation.spawnStartingFuel();
 
     Gamepiece.Hub.BLUE_HUB.resetScore();
-    Gamepiece.Hub.RED_HUB.resetScore();
+    Gamepiece.Hub.RED_HUB .resetScore();
   }
 
   public void autonomous() {
