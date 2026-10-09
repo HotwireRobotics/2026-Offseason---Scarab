@@ -105,14 +105,7 @@ public final class Constants {
   }
 
   public static class Actuator {
-    // Linear travel of the intake when the actuator fully extends.
-    public static final Tunable<Distance> kTravel =
-        new Tunable<>("Actuator/Travel", 1, Feet::of);
-    // Inclination of the linear travel relative to horizontal.
-    public static final Tunable<Angle> kAngle =
-        new Tunable<>("Actuator/Angle", 25, Degrees::of);
-
-    // CANcoder-referenced positions for the two actuator states.
+    // Leader positions for the two actuator states.
     public static final Tunable<Angle> kRetracted =
         new Tunable<>("Actuator/Retracted", 0, Rotations::of);
     public static final Tunable<Angle> kExtended =
@@ -120,12 +113,11 @@ public final class Constants {
 
     // Position error within which the actuator is considered "on target".
     public static final Tunable<Angle> kTolerance =
-        new Tunable<>("Actuator/Tolerance", 0.0, Rotations::of);
+        new Tunable<>("Actuator/Tolerance", 0.05, Rotations::of);
 
     // Closed-loop proportional gain for the leader motor. Applied once, at
     // device configuration.
     public static final double kP = 3.5; // Testing //! 2.00 (Normal)
-    public static final double kI = 0.25; // Testing //! 0.25
   }
 
   public static class Control {

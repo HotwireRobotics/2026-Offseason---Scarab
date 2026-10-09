@@ -64,6 +64,19 @@ public interface MotorIO {
 
   void configureAcceleration(double kA);
 
+  public static enum Gravity {
+    ELEVATOR,
+    ARM
+  }
+  /** Configure gravity feedforward (kG), constant or scaled by arm angle. */
+  void configureGravity(double kG, Gravity type);
+
+  /** Set sensor rotations per mechanism rotation. */
+  void setRatio(double ratio);
+
+  /** Overwrite the measured mechanism position. */
+  void resetPosition(Angle position);
+
   /** Run to position. */
   void putPosition(Angle position);
 

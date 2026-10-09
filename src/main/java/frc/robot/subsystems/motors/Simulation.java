@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.Volts;
 import java.util.Optional;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -18,6 +19,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -38,6 +40,8 @@ public class Simulation implements MotorIO {
   private final VoltageOut voltageOut = new VoltageOut(0);
   private final PositionVoltage positionVoltage = new PositionVoltage(0);
   private final Follower follower = new Follower(0, MotorAlignmentValue.Aligned);
+
+  private final Slot0Configs slot = new Slot0Configs();
 
   // Configurator.
   private final TalonFXConfigurator configurator;
@@ -91,37 +95,61 @@ public class Simulation implements MotorIO {
   /** Configure proportional gain (kP). */
   @Override
   public void configureProportional(double kP) {
-    configurator.apply(new Slot0Configs().withKP(kP));
+    configurator.apply(slot.withKP(kP));
   }
 
   /** Configure integral gain (kI). */
   @Override
   public void configureIntegral(double kI) {
-    configurator.apply(new Slot0Configs().withKI(kI));
+    configurator.apply(slot.withKI(kI));
   }
 
   /** Configure derivative gain (kD). */
   @Override
   public void configureDerivative(double kD) {
-    configurator.apply(new Slot0Configs().withKD(kD));
+    configurator.apply(slot.withKD(kD));
   }
 
   /** Configure static friction feedforward (kS). */
   @Override
   public void configureStaticFriction(double kS) {
-    configurator.apply(new Slot0Configs().withKS(kS));
+    configurator.apply(slot.withKS(kS));
   }
 
   /** Configure velocity feedforward (kV). */
   @Override
   public void configureVelocity(double kV) {
-    configurator.apply(new Slot0Configs().withKV(kV));
+    configurator.apply(slot.withKV(kV));
   }
 
   /** Configure acceleration feedforward (kA). */
   @Override
   public void configureAcceleration(double kA) {
-    configurator.apply(new Slot0Configs().withKA(kA));
+    configurator.apply(slot.withKA(kA));
+  }
+
+  /** Configure gravity feedforward (kG). */
+  @Override
+  public void configureGravity(double kG, Gravity type) {
+    GravityTypeValue value = (type == Gravity.ARM)
+      ? GravityTypeValue.Arm_Cosine
+      : GravityTypeValue.Elevator_Static;
+    configurator.apply(slot
+      .withKG(kG)
+      .withGravityType(value));
+  }
+
+  /** Set sensor rotations per mechanism rotation. */
+  @Override
+  public void setRatio(double ratio) {
+    configurator.apply(new FeedbackConfigs()
+      .withSensorToMechanismRatio(ratio));
+  }
+
+  /** Overwrite the measured mechanism position. */
+  @Override
+  public void resetPosition(Angle position) {
+    motor.setPosition(position);
   }
 
   /** Set the supply current limit. */

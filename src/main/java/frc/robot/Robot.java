@@ -16,9 +16,11 @@ import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.Constants;
 import frc.robot.constants.LimelightHelpers;
 import frc.robot.hotwire.Logs;
+import frc.robot.hotwire.Tunable;
 import frc.robot.applicable.ctre.Drive.Side;
 import frc.robot.applicable.ctre.Drive.Zone;
 
@@ -32,6 +34,9 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   // Declare autonomous command.
   private Command autonomousCommand;
+  private Command autonomousSequence;
+  private final Tunable<Time> autonomousDelay =
+      new Tunable<>("Autonomous/Delay", 0, Seconds::of);
 
   // Declare robot container.
   private final RobotContainer container;
@@ -104,11 +109,11 @@ public class Robot extends LoggedRobot {
 
     // Log pose data.
     Logger.recordOutput("Robot Pose", container.drive.getPose());
-    Logger.recordOutput("IsNeutral", container.drive.getZone().equals(Zone.NEUTRAL));
-    Logger.recordOutput("IsRightSide", container.drive.getSide().equals(Side.RIGHT));
+    Logger.recordOutput("IsNeutral",  container.drive.getZone().equals(Zone.NEUTRAL));
+    Logger.recordOutput("IsRightSide",container.drive.getSide()  .equals(Side.RIGHT));
 
     // Log field poses.
-    Logger.recordOutput("Hub Pose", Constants.Poses.hub.getPose());
+    Logger.recordOutput("Hub Pose",   Constants.Poses.hub  .getPose());
     Logger.recordOutput("Tower Pose", Constants.Poses.tower.getPose());
 
     // Update python pose estimate.
@@ -148,7 +153,9 @@ public class Robot extends LoggedRobot {
     // Schedule autonomous command.
     if (autonomousCommand != null) {
       Logger.recordOutput("Robot/AutonomousCommand", autonomousCommand.getName());
-      CommandScheduler.getInstance().schedule(autonomousCommand);
+      autonomousSequence = Commands.waitTime(autonomousDelay.get())
+        .andThen(autonomousCommand.asProxy());
+      CommandScheduler.getInstance().schedule(autonomousSequence);
     } else {
       Logger.recordOutput("Robot/AutonomousCommand", "None");
     }
@@ -163,8 +170,8 @@ public class Robot extends LoggedRobot {
     Logger.recordOutput("Robot/Mode", "Teleop");
 
     // Halt autonomous command.
-    if (autonomousCommand != null) {
-      autonomousCommand.cancel();
+    if (autonomousSequence != null) {
+      autonomousSequence.cancel();
     }
   }
 

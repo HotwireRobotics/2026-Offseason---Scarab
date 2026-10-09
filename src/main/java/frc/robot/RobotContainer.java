@@ -31,7 +31,7 @@ import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.actuator.Actuator;
 import frc.robot.constants.Constants.Joysticks.*;
 
 import java.util.Set;
@@ -48,7 +48,7 @@ public class RobotContainer {
     public final Intake intake;
     public final Hopper hopper;
     public final Shooter shooter;
-    public final Wrist actuator;
+    public final Actuator actuator;
     public final PowerDistribution PDP;
 
     // Voice interface, and the flag its test verb toggles.
@@ -59,9 +59,11 @@ public class RobotContainer {
     private final LoggedDashboardChooser<Command> autoChooser;
     private final LoggedDashboardChooser<Boolean> localization;
     private final LoggedDashboardChooser<Boolean> alignment;
-    /** Held to shoot. The drivetrain also locks in X while it is held. */
+    /** Held to shoot. */
     private final Trigger shooting = mirrored(Joysticks.operator.rightTrigger(), Joysticks.driver.rightTrigger())
             .or(Joysticks.operator.rightBumper());
+    /** Held to aim at the hub, and range the shooter off the hub distance. */
+    private final Trigger aiming = Joysticks.operator.x().or(Joysticks.driver.x());
 
     /**
      * An operator control, also on the driver controller while
@@ -78,7 +80,7 @@ public class RobotContainer {
                 shooting,
                 // Held, the button that aims at the hub also takes the
                 // shooter's velocity off the range it is aiming from.
-                mirrored(Joysticks.operator.x(), Joysticks.driver.x()),
+                aiming,
                 this::getHubDistance);
         vision = new Vision(
                 drive::getPose, drive::getRotation,
@@ -89,7 +91,7 @@ public class RobotContainer {
                 mirrored(Joysticks.operator.leftBumper(), Joysticks.driver.leftBumper())
                 //   .or(new Trigger(() -> shooter.isReady())) //! Disabled auto-start.
         );
-        actuator = new Wrist(Joysticks.operator.a());
+        actuator = new Actuator(Joysticks.operator.a());
         PDP = new PowerDistribution();
         PDP.setSwitchableChannel(true);
 
@@ -118,10 +120,8 @@ public class RobotContainer {
                 Commands.runOnce(intaking::cancel).andThen(intake.stop()));
 
         // Actuator (intake deployment) auto markers.
-        NamedCommands.registerCommand("Lower Intake", actuator.pulse());
-        //! Disabled
-        // NamedCommands.registerCommand("Raise Intake", Commands.runOnce(actuator::retract));
-        NamedCommands.registerCommand("Drop Arm",     actuator.pulse());
+        NamedCommands.registerCommand("Lower Intake", actuator.runExtend());
+        NamedCommands.registerCommand("Drop Arm",     actuator.runExtend());
 
         NamedCommands.registerCommand("Intake Period",   Commands.none());
         NamedCommands.registerCommand("Occilate Intake", Commands.none());
@@ -134,24 +134,22 @@ public class RobotContainer {
                 Commands.runOnce(shooting::cancel).andThen(shooter.stop()));
 
         NamedCommands.registerCommand("Firing Sequence", Commands.sequence(
-                Commands.parallel(
-                        drive.stopX(),
-                        shooter.runAt(Constants.Shooter.kSpeed),
-                        Commands.sequence(
-                                waitFor(Constants.Shooter.kSpinUpTime),
-                                Commands.parallel(
-                                        hopper.run(),
-                                        Commands.sequence(
-                                                waitFor(Constants.Shooter.kRetractDelay)
-                                                //! Disabled
-                                                // , Commands.runOnce(actuator::retract)
-                                                ))))
-                        .raceWith(Commands.sequence(
-                                waitFor(Constants.Shooter.kSpinUpTime),
-                                waitFor(Constants.Shooter.kFiringTime))),
-                Commands.parallel(
-                        shooter.stop(),
-                        hopper.stop()).withTimeout(0.1)));
+			Commands.parallel(
+				drive.stopX(),
+				shooter.runAt(Constants.Shooter.kSpeed),
+				Commands.sequence(
+					waitFor(Constants.Shooter.kSpinUpTime),
+					Commands.parallel(
+						hopper.run(),
+						Commands.sequence(
+							waitFor(Constants.Shooter.kRetractDelay), 
+							Commands.runOnce(actuator::retract)))))
+				.raceWith(Commands.sequence(
+					waitFor(Constants.Shooter.kSpinUpTime),
+					waitFor(Constants.Shooter.kFiringTime))),
+			Commands.parallel(
+					shooter.stop(),
+					hopper .stop()).withTimeout(0.1)));
 
         // Autonomous
         if (!Constants.mode.equals(Mode.COMPETITION)) {
@@ -186,15 +184,6 @@ public class RobotContainer {
 
         // Secondary routine.
         autoChooser.addOption("A-Back-Up", new PathPlannerAuto("A-Back-Up", false));
-
-        // autoChooser.addOption("A-Short-Unineutral Right", new PathPlannerAuto("A-Short-Unineutral", false));
-        // autoChooser.addOption("A-Short-Unineutral Left", new PathPlannerAuto("A-Short-Unineutral", true));
-
-        // Tertiary autonomous routine.
-        // autoChooser.addOption("A-Shoot-Depot", new PathPlannerAuto("A-Shoot-Depot"));
-
-        // Quaternary autonomous routine.
-        // autoChooser.addOption("CS-Bineutral", new PathPlannerAuto("CS-Bineutral"));
     }
 
     /** Distance from the robot to the hub. */
@@ -255,7 +244,7 @@ public class RobotContainer {
                 () -> -Constants.Joysticks.driver.getLeftY(),
                 () -> -Constants.Joysticks.driver.getLeftX(),
                 rotation)
-                .beforeStarting(() -> drive.setHeadingSource(Drive.HeadingSource.KINEMATIC))
+                .beforeStarting(() -> drive.setHeadingSource(Drive.HeadingSource.GYRO)) //! Disabled kinematic compensation.
                 .finallyDo(() -> drive.setHeadingSource(Drive.HeadingSource.GYRO));
     }
 
@@ -273,16 +262,8 @@ public class RobotContainer {
                         () -> -Constants.Joysticks.driver.getLeftX(),
                         () -> -Constants.Joysticks.driver.getRightX()));
 
-        // Lock the drivetrain in X while held, and while shooting.
-        Constants.Joysticks.driver
-                .x()
-                .or(shooting)
-                .whileTrue(drive.stopX());
-
-        // Aim at the hub while held. //! Disabled.
-        // Constants.Joysticks.operator
-        //         .x()
-        //         .whileTrue(firingOrientation());
+        // Aim at the hub while held.
+        aiming.whileTrue(firingOrientation());
 
         Constants.Joysticks.driver
                 .a()

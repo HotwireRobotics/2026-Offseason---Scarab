@@ -5,10 +5,12 @@ import static edu.wpi.first.units.Units.*;
 import java.util.Optional;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -130,6 +132,30 @@ public class TalonFXIO implements MotorIO {
   @Override
   public void configureAcceleration(double kA) {
     configurator.apply(slot.withKA(kA));
+  }
+
+  /** Configure gravity feedforward (kG). */
+  @Override
+  public void configureGravity(double kG, Gravity type) {
+    GravityTypeValue value = (type == Gravity.ARM)
+      ? GravityTypeValue.Arm_Cosine
+      : GravityTypeValue.Elevator_Static;
+    configurator.apply(slot
+      .withKG(kG)
+      .withGravityType(value));
+  }
+
+  /** Set sensor rotations per mechanism rotation. */
+  @Override
+  public void setRatio(double ratio) {
+    configurator.apply(new FeedbackConfigs()
+      .withSensorToMechanismRatio(ratio));
+  }
+
+  /** Overwrite the measured mechanism position. */
+  @Override
+  public void resetPosition(Angle position) {
+    motor.setPosition(position);
   }
 
   /** Set the supply current limit. */

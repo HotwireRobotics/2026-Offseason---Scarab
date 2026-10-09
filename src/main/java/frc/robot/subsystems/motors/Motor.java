@@ -262,6 +262,37 @@ public class Motor {
     io.configureAcceleration(kA);
   }
 
+  /**
+   * Configure gravity feedforward for this motor. An arm scales it by the cosine
+   * of the mechanism position, so zero must be level.
+   * 
+   * @param kG
+   * @param type
+   */
+  public void configureGravity(double kG, MotorIO.Gravity type) {
+    io.configureGravity(kG, type);
+  }
+
+  /**
+   * Set sensor rotations per mechanism rotation. Positions read and commanded
+   * from here on are in mechanism rotations.
+   * 
+   * @param ratio
+   */
+  public void setRatio(double ratio) {
+    io.setRatio(ratio);
+  }
+
+  /**
+   * Overwrite the measured mechanism position, such as seeding a known angle at
+   * boot.
+   * 
+   * @param position
+   */
+  public void resetPosition(Angle position) {
+    io.resetPosition(position);
+  }
+
   /** Configuration groups. */
   public static class Application {
     public MotorIO.Direction direction;

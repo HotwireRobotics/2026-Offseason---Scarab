@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Mode;
+import frc.robot.hotwire.Logs;
 import frc.robot.hotwire.StateManager;
 import frc.robot.subsystems.shooter.ShooterIO.ShooterInputs;
 import frc.robot.subsystems.motors.Motor;
@@ -153,6 +154,8 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // Update subsystem inputs.
     io.updateInputs(inputs);
+    Logs.log(shooter);
+    for (Motor m : shooting) Logs.log(m);
   }
 
   /**
